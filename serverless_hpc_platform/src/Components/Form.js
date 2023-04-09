@@ -13,7 +13,6 @@ export const Form = () => {
     // const [imageUrl, setImageUrl] = useState(null);
     const [file, setFile] = useState(null);
     const [text, setText] = useState('')
-    const bucket = 'fovus-serverless-project';
 
     const handleFileSelect = (e) => {
         setFile(e.target.files[0]);
@@ -28,8 +27,8 @@ export const Form = () => {
             return;
         }
         const params = {
-            Bucket: bucket,
-            Key: bucket + '/' + file.name,
+            Bucket:  'fovus-serverless-project',
+            Key: file.name,
             Body: file
         };
         const { Location } = await s3.upload(params).promise();
