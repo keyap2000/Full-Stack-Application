@@ -1,6 +1,10 @@
 import AWS from 'aws-sdk';
 import { useState } from 'react';
 
+import axios from 'axios'
+
+const { nanoid } = require('nanoid');
+
 AWS.config.update({
     accessKeyId: 'AKIAVHCA2VB7D7NLU5CX',
     secretAccessKey: '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',
@@ -27,14 +31,39 @@ export const Form = () => {
             return;
         }
         const params = {
-            Bucket:  'fovus-serverless-project',
+            Bucket: 'fovus-serverless-project',
             Key: file.name,
             Body: file
         };
         const { Location } = await s3.upload(params).promise();
         // setImageUrl(Location);
         console.log('uploading to s3', Location);
+
+        var data = {
+            id: nanoid(),
+            input_file_path: "fovus-serverless-project" + "/" + file.name,
+            input_text: text
+        };
+
+        var config = {
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: 'https://1gfpdch7c5.execute-api.us-east-2.amazonaws.com/items',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            data: data
+        };
+
+        axios(config)
+            .then(function (response) {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
+
     return (
         <div style={{ marginTop: '150px' }}>
 
@@ -51,11 +80,11 @@ export const Form = () => {
                 <input type="file" onChange={handleFileSelect} />
             </div>
 
-            
-                <div style={{ marginTop: '10px' }}>
-                    <button onClick={uploadToS3}>Submit</button>
-                </div>
-            
+
+            <div style={{ marginTop: '10px' }}>
+                <button onClick={uploadToS3}>Submit</button>
+            </div>
+
             {/* {imageUrl && (
                 <div style={{ marginTop: '10px' }}>
                     <img src={imageUrl} alt="uploaded" />
