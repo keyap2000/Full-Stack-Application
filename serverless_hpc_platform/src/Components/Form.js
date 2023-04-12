@@ -6,15 +6,14 @@ import axios from 'axios'
 const { nanoid } = require('nanoid');
 
 AWS.config.update({
-    accessKeyId: 'AKIAVHCA2VB7D7NLU5CX',
-    secretAccessKey: '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',
+    accessKeyId: 'ACCESSKEY',
+    secretAccessKey: 'SECRETACCESSKEY',
     region: 'ap-southeast-2',
     signatureVersion: 'v4',
 });
 
 export const Form = () => {
     const s3 = new AWS.S3();
-    // const [imageUrl, setImageUrl] = useState(null);
     const [file, setFile] = useState(null);
     const [text, setText] = useState('')
 
@@ -36,12 +35,11 @@ export const Form = () => {
             Body: file
         };
         const { Location } = await s3.upload(params).promise();
-        // setImageUrl(Location);
         console.log('uploading to s3', Location);
 
         var data = {
             id: nanoid(),
-            input_file_path: "fovus-serverless-project" + "/" + file.name,
+            input_file_path: "fovus-serverless-project/" + file.name,
             input_text: text
         };
 
@@ -85,11 +83,7 @@ export const Form = () => {
                 <button onClick={uploadToS3}>Submit</button>
             </div>
 
-            {/* {imageUrl && (
-                <div style={{ marginTop: '10px' }}>
-                    <img src={imageUrl} alt="uploaded" />
-                </div>
-            )} */}
+
         </div>
     );
 }
